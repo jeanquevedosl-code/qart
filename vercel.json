@@ -1,3 +1,11 @@
 {
-  "outputDirectory": "dist"
-}   
+  "installCommand": "npm install --prefix main",
+  "buildCommand": "npm run build --prefix main",
+  "outputDirectory": "main/dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
