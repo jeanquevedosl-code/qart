@@ -1,0 +1,262 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #131009;
+  --color-coal: #1c1710;
+  --color-line: #2e281d;
+  --color-smoke: #8f8672;
+  --color-chalk: #f4efe3;
+  --color-bone: #ece4d2;
+  --color-paper: #e3d9c2;
+  --color-flame: #ff4d24;
+  --color-butter: #ffc945;
+  --color-lilac: #c9b8f2;
+
+  --font-display: "Syne", ui-sans-serif, sans-serif;
+  --font-body: "Space Grotesk", ui-sans-serif, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-ink text-chalk font-body antialiased;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-flame);
+    color: var(--color-ink);
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ink);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-flame);
+  }
+}
+
+/* ---------- textura de grão sobre tudo ---------- */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 95;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 1.4s steps(4) infinite;
+}
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2%, 1.6%); }
+  50% { transform: translate(1.4%, -1.2%); }
+  75% { transform: translate(-1%, -2%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---------- grade de fundo ---------- */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(244 239 227 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(244 239 227 / 0.045) 1px, transparent 1px);
+  background-size: 76px 76px;
+}
+.bg-grid-dark {
+  background-image:
+    linear-gradient(to right, rgb(19 16 9 / 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(19 16 9 / 0.08) 1px, transparent 1px);
+  background-size: 76px 76px;
+}
+
+/* ---------- texto vazado ---------- */
+.text-outline {
+  -webkit-text-stroke: 1.5px rgb(244 239 227 / 0.16);
+  color: transparent;
+}
+.text-outline-ink {
+  -webkit-text-stroke: 1.5px rgb(19 16 9 / 0.3);
+  color: transparent;
+}
+
+/* ---------- letreiros / marquees ---------- */
+.marquee {
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: marquee var(--mq-dur, 30s) linear infinite;
+}
+.marquee-track.reverse {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* ---------- revelação de linhas do título ---------- */
+.mask-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+.mask-line > span {
+  display: block;
+  transform: translateY(118%);
+  animation: line-up 1s cubic-bezier(0.22, 0.61, 0.2, 1) forwards;
+  animation-delay: var(--line-delay, 0ms);
+}
+@keyframes line-up {
+  to { transform: translateY(0); }
+}
+
+/* ---------- scroll reveal ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(0.22, 0.61, 0.2, 1);
+  transition-delay: var(--rv-delay, 0ms);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- animações utilitárias ---------- */
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 16s linear infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgb(255 77 36 / 0.55); }
+  70% { box-shadow: 0 0 0 9px rgb(255 77 36 / 0); }
+}
+.dot-live {
+  animation: pulse-dot 1.9s ease-out infinite;
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+.caret {
+  animation: caret-blink 1.05s steps(1) infinite;
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float {
+  animation: float-y 5s ease-in-out infinite;
+}
+
+/* ---------- link com sublinhado deslizante ---------- */
+.u-link {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1.5px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.35s cubic-bezier(0.22, 0.61, 0.2, 1);
+  padding-bottom: 2px;
+}
+.u-link:hover,
+.u-link:focus-visible {
+  background-size: 100% 1.5px;
+}
+
+/* ---------- acordeão (capacidades) ---------- */
+.acc-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.55s cubic-bezier(0.22, 0.61, 0.2, 1);
+}
+.acc-body.open {
+  grid-template-rows: 1fr;
+}
+.acc-inner {
+  overflow: hidden;
+}
+
+/* ---------- cursor customizado ---------- */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 120;
+  pointer-events: none;
+  border-radius: 9999px;
+}
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--color-flame);
+  transform: translate(-50%, -50%);
+}
+.cursor-ring {
+  width: 38px;
+  height: 38px;
+  border: 1.5px solid var(--color-chalk);
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.2, 1), border-color 0.28s;
+}
+.cursor-ring.grow {
+  transform: translate(-50%, -50%) scale(1.9);
+  border-color: var(--color-flame);
+}
+html.fine-cursor,
+html.fine-cursor a,
+html.fine-cursor button,
+html.fine-cursor [role="button"] {
+  cursor: none;
+}
+
+/* ---------- acessibilidade: movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .mask-line > span {
+    transform: none;
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .grain::after {
+    animation: none;
+  }
+}
